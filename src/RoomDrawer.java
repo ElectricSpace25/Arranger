@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public class RoomDrawer {
 
 
-
     public static void draw(String[][] roomGrid, ArrayList<obj> objects, int width, int height) throws IOException {
 
         System.out.println("Drawing...");
         int angle = 0;
+        int direction = 0;
 
         BufferedImage tile;
 
@@ -34,11 +34,33 @@ public class RoomDrawer {
 
 
         //0 = left, 1 = right, 2 = down, 3 = up (directions of path)
-        for (obj o:objects){
-            if (o.direction == 0) angle = 90;
-            if (o.direction == 1) angle = 270;
-            if (o.direction == 2) angle = 0;
-            if (o.direction == 3) angle = 180;
+        for (obj o : objects) {
+
+            if (o.size == 2) {
+//                System.out.println("0 = left, 1 = right, 2 = down, 3 = up");
+//                System.out.println("direction: " + o.direction);
+//                System.out.println("direction2: " + o.direction2);
+//                System.out.println("initial direction: " + o.initialDirection);
+
+                if (o.initialDirection == o.direction) {
+                    direction = o.direction;
+                } else if (o.initialDirection == o.direction2) {
+                    direction = o.direction2;
+                } else {
+                    if (o.initialDirection == 0) direction = 1;
+                    if (o.initialDirection == 1) direction = 0;
+                    if (o.initialDirection == 2) direction = 3;
+                    if (o.initialDirection == 3) direction = 2;
+
+                }
+            } else {
+                direction = o.direction;
+            }
+
+            if (direction == 0) angle = 90; //Right
+            if (direction == 1) angle = 270; //Left
+            if (direction == 2) angle = 0; //Up
+            if (direction == 3) angle = 180; //Down
 
             tile = rotateImageByDegrees(o.tile, angle);
             graphics2D.drawImage(tile, o.x * 32, o.y * 32, null);

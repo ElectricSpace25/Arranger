@@ -215,6 +215,11 @@ public class Room {
                 down++;
             }
         }
+        if (right > 1) object.initialDirection = 1;
+        if (left > 1) object.initialDirection = 0;
+        if (up > 1) object.initialDirection = 3;
+        if (down > 1) object.initialDirection = 2;
+
         return (right > 1 || left > 1 || up > 1 || down > 1);
     }
 
@@ -357,7 +362,8 @@ public class Room {
 
             //Check if hit the target
             if (pathX == x && pathY == y) {
-                object.direction = direction;
+                if (object.direction != 0) object.direction2 = direction;
+                else object.direction = direction;
                 return true;
             }
 

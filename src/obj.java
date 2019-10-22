@@ -9,7 +9,9 @@ public class obj {
     int y;
     int x2;
     int y2;
-    int direction;
+    int initialDirection;
+    int direction = 0;
+    int direction2;
     BufferedImage tile;
 
     public void singleObj(String tile, int size, int x, int y) throws IOException {
