@@ -10,13 +10,13 @@ import java.util.ArrayList;
 
 public class Main {
 
-    public void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
         int width = 3+2;
         int height = 3+2;
 
         Room bathroom = new Room(width, height,"bathroom");
-//        RoomDrawer.draw(bathroom.roomGrid, bathroom.width, bathroom.height, bathroom.objectDirections, bathroom.objectCoords);
+        RoomDrawer.draw(bathroom.roomGrid, bathroom.width, bathroom.height, bathroom.objectDirections, bathroom.objectCoords);
 
     }
 
