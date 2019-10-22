@@ -7,26 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class RoomDrawer {
-    static BufferedImage blank;
-    static BufferedImage wall;
-    static BufferedImage sink;
-    static BufferedImage toilet;
-    static BufferedImage bath;
-
-    public static void setup() throws IOException{
-        blank = ImageIO.read(new File("img/blank.png"));
-        wall = ImageIO.read(new File("img/wall.png"));
-        sink = ImageIO.read(new File("img/sink.png"));
-        toilet = ImageIO.read(new File("img/toilet.png"));
-        bath = ImageIO.read(new File("img/bath.png"));
-    }
 
 
-    public static void draw(String[][] roomGrid, int width, int height, ArrayList<Integer> directions, ArrayList<Integer> coords) throws IOException {
-        setup();
+
+    public static void draw(String[][] roomGrid, ArrayList<obj> objects, int width, int height) throws IOException {
 
         System.out.println("Drawing...");
-        int count = 0;
         int angle = 0;
 
         BufferedImage tile;
@@ -37,31 +23,33 @@ public class RoomDrawer {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-
-                tile = setTile(roomGrid[y][x]);
-                graphics2D.drawImage(tile, x * 32, y * 32, null);
+                if (roomGrid[y][x] == "X") {
+                    graphics2D.drawImage(ImageIO.read(new File("img/wall.png")), x * 32, y * 32, null);
+                }
+                if (roomGrid[y][x] == "-") {
+                    graphics2D.drawImage(ImageIO.read(new File("img/blank.png")), x * 32, y * 32, null);
+                }
             }
         }
 
-        //Rotate tile
 
         //0 = left, 1 = right, 2 = down, 3 = up (directions of path)
-        for (int i = 0; i < coords.size()-1; i += 2) {
-            int x = coords.get(i);
-            int y = coords.get(i+1);
-            if (directions.get(count) == 0) angle = 270;
-            if (directions.get(count) == 1) angle = 90;
-            if (directions.get(count) == 2) angle = 0;
-            if (directions.get(count) == 3) angle = 180;
-            count++;
-            tile = setTile(roomGrid[y][x]);
-            System.out.println(angle);
-            tile = rotateImageByDegrees(tile, angle);
-            graphics2D.drawImage(tile, x * 32, y * 32, null);
+        for (obj o:objects){
+            if (o.direction == 0) angle = 270;
+            if (o.direction == 1) angle = 90;
+            if (o.direction == 2) angle = 0;
+            if (o.direction == 3) angle = 180;
+
+            tile = rotateImageByDegrees(o.tile, angle);
+            graphics2D.drawImage(tile, o.x * 32, o.y * 32, null);
+
+            if (o.size == 2) {
+                graphics2D.drawImage(tile, o.x2 * 32, o.y2 * 32, null);
+            }
 
         }
 
-        ImageIO.write(image, "png", new File("lol.png")); //Saves new BufferedImage
+        ImageIO.write(image, "png", new File("house.png")); //Saves new BufferedImage
         System.out.println("Done!");
 
     }
@@ -77,15 +65,6 @@ public class RoomDrawer {
         graphic.drawImage(img, null, 0, 0);
         graphic.dispose();
         return rotated;
-    }
-
-    public static BufferedImage setTile(String tile) {
-        if (tile.equals("X")) return wall;
-        else if (tile.equals("-")) return blank;
-        else if (tile.equals("S")) return sink;
-        else if (tile.equals("B")) return bath;
-        else if (tile.equals("T")) return toilet;
-        else return blank;
     }
 
 }

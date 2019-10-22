@@ -16,7 +16,7 @@ public class Main {
         int height = 3+2;
 
         Room bathroom = new Room(width, height,"bathroom");
-        RoomDrawer.draw(bathroom.roomGrid, bathroom.width, bathroom.height, bathroom.objectDirections, bathroom.objectCoords);
+        RoomDrawer.draw(bathroom.roomGrid, bathroom.objects, bathroom.width, bathroom.height);
 
     }
 

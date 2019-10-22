@@ -4,16 +4,17 @@ import java.util.ArrayList;
 public class Room {
     int width;
     int height;
+    int doorX = 0;
+    int doorY = 0;
+    int doorSide = 0;
     String[][] roomGrid;
-    int debug = 3;
+    int debug = 0;
     //0 = none | 1 = room validity & print | 2 = Object checks | 3 = Pathing visualization
-    ArrayList<Integer> objectCoords = new ArrayList<>();
-    ArrayList<Integer> objectSizes = new ArrayList<>();
     ArrayList<Integer> objectDirections = new ArrayList<>();
+    ArrayList<obj> objects = new ArrayList<>();
 
 
-
-    public Room (int width, int height, String type) throws IOException{
+    public Room(int width, int height, String type) throws IOException {
         this.width = width;
         this.height = height;
         roomGrid = new String[height][width];
@@ -22,7 +23,6 @@ public class Room {
             bathroom();
         }
     }
-
 
 
     public String[][] createRoom(int width, int height) {
@@ -64,14 +64,13 @@ public class Room {
         }
     }
 
-    public String[][] bathroom() throws IOException{
+    public String[][] bathroom() throws IOException {
         int tries = 0;
         do {
 
             if (debug > 0) System.out.println();
 
-            objectCoords = new ArrayList<>();
-            objectSizes = new ArrayList<>();
+            objects = new ArrayList<>();
 
             //Create empty room
             roomGrid = createRoom(roomGrid[0].length, roomGrid.length);
@@ -80,13 +79,18 @@ public class Room {
             placeDoor();
 
             //Bathtub
-            placeDoubleObj("B");
+            obj bath = new obj();
+            placeDoubleObj("bath", bath);
 
             //Toilet
-            placeObj("T");
+            obj toilet = new obj();
+            ;
+            placeObj("toilet", toilet);
 
             //Sink
-            placeObj("S");
+            obj sink = new obj();
+            ;
+            placeObj("sink", sink);
 
             if (debug > 0) printRoom();
 
@@ -99,20 +103,22 @@ public class Room {
 
     }
 
-    public void placeObj(String letter) {
+    public void placeObj(String name, obj oName) throws IOException {
         int x = 0;
         int y = 0;
         while (!roomGrid[y][x].equals("-")) {
             x = (int) (Math.random() * (roomGrid[0].length - 2)) + 1;
             y = (int) (Math.random() * (roomGrid.length - 2)) + 1;
         }
-        objectCoords.add(x);
-        objectCoords.add(y);
-        objectSizes.add(1);
-        roomGrid[y][x] = letter;
+        oName.singleObj(name, 1, x, y);
+        objects.add(oName);
+//        objectCoords.add(x);
+//        objectCoords.add(y);
+//        objectSizes.add(1);
+        roomGrid[y][x] = name;
     }
 
-    public void placeDoubleObj(String letter) {
+    public void placeDoubleObj(String name, obj oName) throws IOException {
 
         //First block
         int x = 0;
@@ -121,10 +127,7 @@ public class Room {
             x = (int) (Math.random() * (roomGrid[0].length - 2)) + 1;
             y = (int) (Math.random() * (roomGrid.length - 2)) + 1;
         }
-        objectCoords.add(x);
-        objectCoords.add(y);
-        objectSizes.add(2);
-        roomGrid[y][x] = letter;
+        roomGrid[y][x] = name;
 
         //Second block
         int x2 = 0;
@@ -148,49 +151,49 @@ public class Room {
                 y2 = y - 1;
             }
         }
-        objectCoords.add(x2);
-        objectCoords.add(y2);
-        roomGrid[y2][x2] = letter;
+        oName.doubleObj(name, 2, x, y, x2, y2);
+        objects.add(oName);
+        roomGrid[y2][x2] = name;
     }
 
-    public Boolean checkArea(int x, int y) {
-        return (roomGrid[y + 1][x].equals("-") || roomGrid[y][x + 1].equals("-") || roomGrid[y - 1][x].equals("-") || roomGrid[y][x - 1].equals("-"))
-                && !(roomGrid[y + 1][x].equals("=") || roomGrid[y][x + 1].equals("=") || roomGrid[y - 1][x].equals("=") || roomGrid[y][x - 1].equals("="));
+    public Boolean checkArea(obj object) {
+        return (roomGrid[object.y + 1][object.x].equals("-") || roomGrid[object.y][object.x + 1].equals("-") || roomGrid[object.y - 1][object.x].equals("-") || roomGrid[object.y][object.x - 1].equals("-"))
+                && !(roomGrid[object.y + 1][object.x].equals("=") || roomGrid[object.y][object.x + 1].equals("=") || roomGrid[object.y - 1][object.x].equals("=") || roomGrid[object.y][object.x - 1].equals("="));
     }
 
-    public Boolean checkDoubleArea(int x, int y, int x2, int y2) {
+    public Boolean checkDoubleArea(obj object) {
         ArrayList freeSpace = new ArrayList();
 
         //Block 1
-        if (roomGrid[y][x + 1].equals("-")) {
+        if (roomGrid[object.y][object.x + 1].equals("-")) {
             freeSpace.add(0);
         }
-        if (roomGrid[y][x - 1].equals("-")) {
+        if (roomGrid[object.y][object.x - 1].equals("-")) {
             freeSpace.add(1);
         }
-        if (roomGrid[y - 1][x].equals("-")) {
+        if (roomGrid[object.y - 1][object.x].equals("-")) {
             freeSpace.add(2);
         }
-        if (roomGrid[y + 1][x].equals("-")) {
+        if (roomGrid[object.y + 1][object.x].equals("-")) {
             freeSpace.add(3);
         }
-        if (roomGrid[y + 1][x].equals("=") || roomGrid[y][x + 1].equals("=") || roomGrid[y - 1][x].equals("=") || roomGrid[y][x - 1].equals("="))
+        if (roomGrid[object.y + 1][object.x].equals("=") || roomGrid[object.y][object.x + 1].equals("=") || roomGrid[object.y - 1][object.x].equals("=") || roomGrid[object.y][object.x - 1].equals("="))
             return false;
 
         //Block 2
-        if (roomGrid[y2][x2 + 1].equals("-")) {
+        if (roomGrid[object.y2][object.x2 + 1].equals("-")) {
             freeSpace.add(0);
         }
-        if (roomGrid[y2][x2 - 1].equals("-")) {
+        if (roomGrid[object.y2][object.x2 - 1].equals("-")) {
             freeSpace.add(1);
         }
-        if (roomGrid[y2 - 1][x2].equals("-")) {
+        if (roomGrid[object.y2 - 1][object.x2].equals("-")) {
             freeSpace.add(2);
         }
-        if (roomGrid[y2 + 1][x2].equals("-")) {
+        if (roomGrid[object.y2 + 1][object.x2].equals("-")) {
             freeSpace.add(3);
         }
-        if (roomGrid[y2 + 1][x2].equals("=") || roomGrid[y2][x2 + 1].equals("=") || roomGrid[y2 - 1][x2].equals("=") || roomGrid[y2][x2 - 1].equals("="))
+        if (roomGrid[object.y2 + 1][object.x2].equals("=") || roomGrid[object.y2][object.x2 + 1].equals("=") || roomGrid[object.y2 - 1][object.x2].equals("=") || roomGrid[object.y2][object.x2 - 1].equals("="))
             return false;
         //0 = right, 1 = left, 2 = up, 3 = down
 
@@ -215,47 +218,48 @@ public class Room {
     public int placeDoor() {
         //0 = right, 1 = left, 2 = up, 3 = down
         int side = (int) (Math.random() * 4);
-        objectCoords.add(side);
+        doorSide = side;
+
         int rand;
 
         if (side == 0 || side == 1) {
             rand = (int) (Math.random() * (roomGrid.length - 2)) + 1;
             if (side == 0) {
                 roomGrid[rand][roomGrid[0].length - 1] = "=";
-                objectCoords.add(roomGrid[0].length - 1);
-                objectCoords.add(rand);
+                doorX = roomGrid[0].length - 1;
+                doorY = rand;
             } else {
                 roomGrid[rand][0] = "=";
-                objectCoords.add(0);
-                objectCoords.add(rand);
+                doorX = 0;
+                doorY = rand;
             }
         } else {
             rand = (int) (Math.random() * (roomGrid[0].length - 2)) + 1;
             if (side == 2) {
                 roomGrid[0][rand] = "=";
-                objectCoords.add(rand);
-                objectCoords.add(0);
+                doorX = rand;
+                doorY = 0;
             } else {
                 roomGrid[roomGrid[0].length - 1][rand] = "=";
-                objectCoords.add(rand);
-                objectCoords.add(roomGrid[0].length - 1);
+                doorX = rand;
+                doorY = roomGrid[0].length - 1;
             }
         }
 
         return side;
     }
 
-    public Boolean checkRoom() throws IOException{
+    public Boolean checkRoom() throws IOException {
+        //TODO: Change fori to foreach
         if (debug > 0) System.out.println("Checking room...");
         int cursor = 3; // 0 = door side, 1 = door x, 2 = door y
-        for (int i = 0; i < objectSizes.size(); i++) {
-
+        for (int i = 0; i < objects.size(); i++) {
             //Single object
-            if (objectSizes.get(i) == 1) {
-                if (debug > 1) System.out.println("Checking " + objectCoords.get(cursor) + ", " + objectCoords.get(cursor + 1));
+            if (objects.get(i).size == 1) {
+                if (debug > 1) System.out.println("Checking " + objects.get(i).x + ", " + objects.get(i).y);
 
                 //Area
-                if (checkArea(objectCoords.get(cursor), objectCoords.get(cursor + 1))) {
+                if (checkArea(objects.get(i))) {
                     if (debug > 1) System.out.println("✔ Area");
                 } else {
                     if (debug > 1) System.out.println("✗ Area");
@@ -264,23 +268,20 @@ public class Room {
                 }
 
                 //Pathing
-                if (pathTo(objectCoords.get(cursor), objectCoords.get(cursor + 1))) {
+                if (pathTo(objects.get(i), objects.get(i).x, objects.get(i).y)) {
                     if (debug > 1) System.out.println("✔ Pathing");
                 } else {
                     if (debug > 1) System.out.println("✗ Pathing");
                     return false;
                 }
-                cursor += 2;
             }
-
             //Double object
-            if (objectSizes.get(i) == 2) {
-
+            if (objects.get(i).size == 2) {
                 if (debug > 1)
-                    System.out.println("Checking " + objectCoords.get(cursor) + ", " + objectCoords.get(cursor + 1) + " and " + objectCoords.get(cursor + 2) + ", " + objectCoords.get(cursor + 3));
+                    System.out.println("Checking " + objects.get(i).x + ", " + objects.get(i).x + " and " + objects.get(i).x2 + ", " + objects.get(i).y2);
 
                 //Area
-                if (checkDoubleArea(objectCoords.get(cursor), objectCoords.get(cursor + 1), objectCoords.get(cursor + 2), objectCoords.get(cursor + 3))) {
+                if (checkDoubleArea(objects.get(i))) {
                     if (debug > 1) System.out.println("✔ Area");
                 } else {
                     if (debug > 1) System.out.println("✗ Area");
@@ -289,38 +290,33 @@ public class Room {
                 }
 
                 //Pathing block 1
-                if (pathTo(objectCoords.get(cursor), objectCoords.get(cursor + 1))) {
+                if (pathTo(objects.get(i), objects.get(i).x, objects.get(i).y)) {
                     if (debug > 1)
-                        System.out.println("✔ Pathing " + objectCoords.get(cursor) + ", " + objectCoords.get(cursor + 1));
+                        System.out.println("✔ Pathing " + objects.get(i).x + ", " + objects.get(i).y);
                 } else {
                     if (debug > 1)
-                        System.out.println("✗ Pathing " + objectCoords.get(cursor) + ", " + objectCoords.get(cursor + 1));
+                        System.out.println("✗ Pathing " + objects.get(i).x + ", " + objects.get(i).y);
                     return false;
                 }
 
                 //Pathing block 2
-                if (pathTo(objectCoords.get(cursor + 2), objectCoords.get(cursor + 3))) {
+                if (pathTo(objects.get(i), objects.get(i).x2, objects.get(i).y2)) {
                     if (debug > 1)
-                        System.out.println("✔ Pathing " + objectCoords.get(cursor + 2) + ", " + objectCoords.get(cursor + 3));
+                        System.out.println("✔ Pathing " + objects.get(i).x2 + ", " + objects.get(i).y2);
                 } else {
                     if (debug > 1)
-                        System.out.println("✗ Pathing " + objectCoords.get(cursor + 2) + ", " + objectCoords.get(cursor + 3));
+                        System.out.println("✗ Pathing " + objects.get(i).x2 + ", " + objects.get(i).y2);
                     return false;
                 }
-                cursor += 4;
             }
         }
-        //pathTo(room, coords.get(cursor), coords.get(cursor + 1), coords);
-        //System.out.println(pathTo(room, coords.get(3), coords.get(4), coords));
         return true;
     }
 
-    public Boolean pathTo(int x, int y) throws IOException{
+    public Boolean pathTo(obj object, int x, int y) throws IOException {
         //0 = left, 1 = right, 2 = down, 3 = up (yes, it's switched so it could go opposite from door)
+        int direction = doorSide;
         int count = 0;
-        int direction = objectCoords.get(0);
-        int doorX = objectCoords.get(1);
-        int doorY = objectCoords.get(2);
         int pathX = 0;
         int pathY = 0;
         if (direction == 0) { //Go Left (Door at Right)
@@ -359,8 +355,7 @@ public class Room {
 
             //Check if hit the target
             if (pathX == x && pathY == y) {
-                objectDirections.add((x*10) + y);
-                objectDirections.add(direction);
+                object.direction = direction;
                 return true;
             }
 
