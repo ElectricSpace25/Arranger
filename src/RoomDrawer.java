@@ -35,8 +35,8 @@ public class RoomDrawer {
 
         //0 = left, 1 = right, 2 = down, 3 = up (directions of path)
         for (obj o:objects){
-            if (o.direction == 0) angle = 270;
-            if (o.direction == 1) angle = 90;
+            if (o.direction == 0) angle = 90;
+            if (o.direction == 1) angle = 270;
             if (o.direction == 2) angle = 0;
             if (o.direction == 3) angle = 180;
 

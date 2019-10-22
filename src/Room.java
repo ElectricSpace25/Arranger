@@ -58,7 +58,10 @@ public class Room {
     public void printRoom() throws IOException {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                System.out.print(roomGrid[i][j] + " ");
+                System.out.print(roomGrid[i][j]);
+                for (int k = 0; k < 7-roomGrid[i][j].length(); k++) {
+                    System.out.print(" ");
+                }
             }
             System.out.println();
         }
