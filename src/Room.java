@@ -253,16 +253,15 @@ public class Room {
     }
 
     public Boolean checkRoom() throws IOException {
-        //TODO: Change fori to foreach
         if (debug > 0) System.out.println("Checking room...");
         int cursor = 3; // 0 = door side, 1 = door x, 2 = door y
-        for (int i = 0; i < objects.size(); i++) {
+        for (obj o: objects) {
             //Single object
-            if (objects.get(i).size == 1) {
-                if (debug > 1) System.out.println("Checking " + objects.get(i).x + ", " + objects.get(i).y);
+            if (o.size == 1) {
+                if (debug > 1) System.out.println("Checking " + o.x + ", " + o.y);
 
                 //Area
-                if (checkArea(objects.get(i))) {
+                if (checkArea(o)) {
                     if (debug > 1) System.out.println("✔ Area");
                 } else {
                     if (debug > 1) System.out.println("✗ Area");
@@ -271,7 +270,7 @@ public class Room {
                 }
 
                 //Pathing
-                if (pathTo(objects.get(i), objects.get(i).x, objects.get(i).y)) {
+                if (pathTo(o, o.x, o.y)) {
                     if (debug > 1) System.out.println("✔ Pathing");
                 } else {
                     if (debug > 1) System.out.println("✗ Pathing");
@@ -279,12 +278,12 @@ public class Room {
                 }
             }
             //Double object
-            if (objects.get(i).size == 2) {
+            if (o.size == 2) {
                 if (debug > 1)
-                    System.out.println("Checking " + objects.get(i).x + ", " + objects.get(i).x + " and " + objects.get(i).x2 + ", " + objects.get(i).y2);
+                    System.out.println("Checking " + o.x + ", " + o.x + " and " + o.x2 + ", " + o.y2);
 
                 //Area
-                if (checkDoubleArea(objects.get(i))) {
+                if (checkDoubleArea(o)) {
                     if (debug > 1) System.out.println("✔ Area");
                 } else {
                     if (debug > 1) System.out.println("✗ Area");
@@ -293,22 +292,22 @@ public class Room {
                 }
 
                 //Pathing block 1
-                if (pathTo(objects.get(i), objects.get(i).x, objects.get(i).y)) {
+                if (pathTo(o, o.x, o.y)) {
                     if (debug > 1)
-                        System.out.println("✔ Pathing " + objects.get(i).x + ", " + objects.get(i).y);
+                        System.out.println("✔ Pathing " + o.x + ", " + o.y);
                 } else {
                     if (debug > 1)
-                        System.out.println("✗ Pathing " + objects.get(i).x + ", " + objects.get(i).y);
+                        System.out.println("✗ Pathing " + o.x + ", " + o.y);
                     return false;
                 }
 
                 //Pathing block 2
-                if (pathTo(objects.get(i), objects.get(i).x2, objects.get(i).y2)) {
+                if (pathTo(o, o.x2, o.y2)) {
                     if (debug > 1)
-                        System.out.println("✔ Pathing " + objects.get(i).x2 + ", " + objects.get(i).y2);
+                        System.out.println("✔ Pathing " + o.x2 + ", " + o.y2);
                 } else {
                     if (debug > 1)
-                        System.out.println("✗ Pathing " + objects.get(i).x2 + ", " + objects.get(i).y2);
+                        System.out.println("✗ Pathing " + o.x2 + ", " + o.y2);
                     return false;
                 }
             }
