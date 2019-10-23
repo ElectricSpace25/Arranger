@@ -223,7 +223,7 @@ public class Room {
         return (right > 1 || left > 1 || up > 1 || down > 1);
     }
 
-    public int placeDoor() {
+    public int placeDoor() throws IOException{
         //0 = right, 1 = left, 2 = up, 3 = down
         int side = (int) (Math.random() * 4);
         doorSide = side;
@@ -253,7 +253,11 @@ public class Room {
                 doorY = roomGrid[0].length - 1;
             }
         }
-
+        obj door = new obj();
+        door.singleObj("door", 1, doorX, doorY);
+        objects.add(door);
+        door.isDoor = true;
+        door.direction = doorSide;
         return side;
     }
 
@@ -262,7 +266,10 @@ public class Room {
         int cursor = 3; // 0 = door side, 1 = door x, 2 = door y
         for (obj o: objects) {
             //Single object
-            if (o.size == 1) {
+            if (o.isDoor){
+
+            }
+            else if (o.size == 1) {
                 if (debug > 1) System.out.println("Checking " + o.x + ", " + o.y);
 
                 //Area
@@ -283,7 +290,7 @@ public class Room {
                 }
             }
             //Double object
-            if (o.size == 2) {
+            else if (o.size == 2) {
                 if (debug > 1)
                     System.out.println("Checking " + o.x + ", " + o.x + " and " + o.x2 + ", " + o.y2);
 

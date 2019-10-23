@@ -12,6 +12,7 @@ public class obj {
     int initialDirection;
     int direction = 0;
     int direction2;
+    boolean isDoor;
     BufferedImage tile;
     BufferedImage tile2;
 
