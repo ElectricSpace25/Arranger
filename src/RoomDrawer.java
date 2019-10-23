@@ -73,7 +73,7 @@ public class RoomDrawer {
                 else if (o.y > o.y2) angle = 0;
                 tile = rotateImageByDegrees(o.tile, angle);
                 graphics2D.drawImage(tile, o.x * 32, o.y * 32, null);
-                tile = rotateImageByDegrees(o.tile, angle + 180);
+                tile = rotateImageByDegrees(o.tile2, angle + 180);
                 graphics2D.drawImage(tile, o.x2 * 32, o.y2 * 32, null);
             }
 

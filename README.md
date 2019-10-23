@@ -4,6 +4,6 @@ This program will randomly generate a room of a chosen size using 32x32 tiles. I
 
 Currently only generates a bathroom of any size with 1 door, 1 sink, 1 toilet, and 1 bathtub.
 
-Example 3x3 room:
+Example 4x4 room:
 
-![3x3 room](https://i.imgur.com/xZu0Sbh.png)
+![4x4 room](https://i.imgur.com/7yVXDSS.png)

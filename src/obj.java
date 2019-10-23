@@ -13,6 +13,8 @@ public class obj {
     int direction = 0;
     int direction2;
     BufferedImage tile;
+    BufferedImage tile2;
+
 
     public void singleObj(String tile, int size, int x, int y) throws IOException {
         this.size = size;
@@ -28,6 +30,7 @@ public class obj {
         this.x2 = x2;
         this.y2 = y2;
         this.tile = ImageIO.read(new File("img/" + tile + ".png"));
+        this.tile2 = ImageIO.read(new File("img/" + tile + 2 + ".png"));
     }
 
 }
