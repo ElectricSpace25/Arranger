@@ -57,15 +57,23 @@ public class RoomDrawer {
                 direction = o.direction;
             }
 
-            if (direction == 0) angle = 90; //Right
-            if (direction == 1) angle = 270; //Left
-            if (direction == 2) angle = 0; //Up
-            if (direction == 3) angle = 180; //Down
-
-            tile = rotateImageByDegrees(o.tile, angle);
-            graphics2D.drawImage(tile, o.x * 32, o.y * 32, null);
+            if (o.size == 1) {
+                if (direction == 0) angle = 90; //Right
+                if (direction == 1) angle = 270; //Left
+                if (direction == 2) angle = 0; //Up
+                if (direction == 3) angle = 180; //Down
+                tile = rotateImageByDegrees(o.tile, angle);
+                graphics2D.drawImage(tile, o.x * 32, o.y * 32, null);
+            }
 
             if (o.size == 2) {
+                if (o.x < o.x2) angle = 90;
+                else if (o.x > o.x2) angle = 270;
+                else if (o.y < o.y2) angle = 180;
+                else if (o.y > o.y2) angle = 0;
+                tile = rotateImageByDegrees(o.tile, angle);
+                graphics2D.drawImage(tile, o.x * 32, o.y * 32, null);
+                tile = rotateImageByDegrees(o.tile, angle + 180);
                 graphics2D.drawImage(tile, o.x2 * 32, o.y2 * 32, null);
             }
 
