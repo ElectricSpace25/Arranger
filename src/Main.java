@@ -12,8 +12,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        int width = 4+2;
-        int height = 4+2;
+        int width = 6+2;
+        int height = 6+2;
 
         Room bathroom = new Room(width, height,"bathroom");
         bathroom.printRoom();
